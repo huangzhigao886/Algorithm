@@ -1,5 +1,7 @@
 package com.algorithm.graphtheory.adj;
 
+import lombok.Data;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -11,6 +13,7 @@ import java.util.TreeSet;
  * @Author: huangzhigao
  * @Date: 2020/4/11 17:15
  */
+@Data
 public class Graph {
 
     /**
