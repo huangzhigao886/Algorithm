@@ -1,21 +1,22 @@
-package com.algorithm.graphtheory;
+package com.algorithm.graphtheory.adj;
 
 import lombok.Data;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Scanner;
+import java.util.TreeSet;
 
 /**
- * 邻接矩阵,无向图
+ * 目前仅适用于无向无权循环图
  *
  * @Author: huangzhigao
- * @Date: 2020/4/9 22:02
+ * @Date: 2020/4/11 14:12
  */
 @Data
-public class AdjMatrix {
+public class Graph {
     /**
      * 顶点
      */
@@ -27,11 +28,11 @@ public class AdjMatrix {
     private int E;
 
     /**
-     * 二维矩阵
+     * 链表
      */
-    private int[][] adj;
+    private TreeSet<Integer>[] adj;
 
-    public AdjMatrix(String fileName) {
+    public Graph(String fileName) {
         File file = new File(fileName);
         try {
             Scanner scanner = new Scanner(file);
@@ -41,7 +42,11 @@ public class AdjMatrix {
                 //顶点数量不能为负数
                 throw new IllegalArgumentException("V must be non-negative");
             }
-            adj = new int[V][V];
+            adj = new TreeSet[V];
+            for (int i = 0; i < V; i++) {
+                //初始化每个链表
+                adj[i] = new TreeSet<Integer>();
+            }
             //第二个元素为边数
             E = scanner.nextInt();
             if (E < 0) {
@@ -58,13 +63,13 @@ public class AdjMatrix {
                     //自身环
                     throw new IllegalArgumentException("Self Loop is Detected");
                 }
-                if (adj[a][b] == 1) {
+                if (adj[a].contains(b)) {
                     //平行边
                     throw new IllegalArgumentException("Parallel Edges is Detected");
                 }
                 //因为是无向图，因此既有a->b 也有b->a
-                adj[a][b] = 1;
-                adj[b][a] = 1;
+                adj[a].add(b);
+                adj[b].add(a);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -82,24 +87,18 @@ public class AdjMatrix {
     public boolean hasEdge(int v, int w) {
         validateVertex(v);
         validateVertex(w);
-        return adj[v][w] == 1;
+        return adj[v].contains(w);
     }
 
     /**
-     * 返回指向V的顶点
+     * 返回与V相邻的顶点
      *
      * @param v
      * @return
      */
-    public List adj(int v) {
-        ArrayList<Integer> list = new ArrayList<Integer>();
+    public TreeSet<Integer> adj(int v) {
         validateVertex(v);
-        for (int i = 0; i < V; i++) {
-            if (adj[v][i] == 1) {
-                list.add(i);
-            }
-        }
-        return list;
+        return adj[v];
     }
 
     /**
@@ -108,25 +107,22 @@ public class AdjMatrix {
      * @return
      */
     public int getDegree(int v) {
-        return adj(v).size();
+        validateVertex(v);
+        return adj[v].size();
     }
+
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(String.format("V=%d,E=%d\n", V, E));
-        for (int i = 0; i < adj.length; i++) {
-            for (int j = 0; j < adj[i].length; j++) {
-                sb.append(String.format("%d ", adj[i][j]));
+        for (int i = 0; i < V; i++) {
+            sb.append(i + ":");
+            for (int w : adj[i]) {
+                sb.append(String.format("%d ", w));
             }
             sb.append('\n');
         }
         return sb.toString();
-    }
-
-
-    public static void main(String[] args) {
-        AdjMatrix adjMatrix = new AdjMatrix("g.txt");
-        System.out.println(adjMatrix.toString());
     }
 }

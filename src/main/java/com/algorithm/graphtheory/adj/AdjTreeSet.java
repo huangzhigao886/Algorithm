@@ -1,22 +1,18 @@
-package com.algorithm.graphtheory;
+package com.algorithm.graphtheory.adj;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Scanner;
+import java.util.TreeSet;
 
 /**
- * 邻接表,每个顶点后面都跟着链表
- * 0:1,2
- * 1:2,3
- * 3:1
+ * 邻接表用treeSet存储性能更优
  *
  * @Author: huangzhigao
- * @Date: 2020/4/9 22:50
+ * @Date: 2020/4/9 23:14
  */
-public class AdjList {
+public class AdjTreeSet {
 
     /**
      * 顶点
@@ -31,9 +27,9 @@ public class AdjList {
     /**
      * 链表
      */
-    private LinkedList<Integer>[] adj;
+    private TreeSet<Integer>[] adj;
 
-    public AdjList(String fileName) {
+    public AdjTreeSet(String fileName) {
         File file = new File(fileName);
         try {
             Scanner scanner = new Scanner(file);
@@ -43,10 +39,10 @@ public class AdjList {
                 //顶点数量不能为负数
                 throw new IllegalArgumentException("V must be non-negative");
             }
-            adj = new LinkedList[V];
+            adj = new TreeSet[V];
             for (int i = 0; i < V; i++) {
                 //初始化每个链表
-                adj[i] = new LinkedList<Integer>();
+                adj[i] = new TreeSet<Integer>();
             }
             //第二个元素为边数
             E = scanner.nextInt();
@@ -97,9 +93,9 @@ public class AdjList {
      * @param v
      * @return
      */
-    public LinkedList<Integer> adj(int v) {
+    public Iterator<Integer> adj(int v) {
         validateVertex(v);
-        return adj[v];
+        return adj[v].iterator();
     }
 
     /**
@@ -108,7 +104,13 @@ public class AdjList {
      * @return
      */
     public int getDegree(int v) {
-        return adj(v).size();
+        validateVertex(v);
+        return adj[v].size();
+    }
+
+
+    public TreeSet<Integer>[] getAdj() {
+        return adj;
     }
 
     @Override
@@ -127,7 +129,7 @@ public class AdjList {
 
 
     public static void main(String[] args) {
-        AdjList adjMatrix = new AdjList("g.txt");
+        AdjTreeSet adjMatrix = new AdjTreeSet("g.txt");
         System.out.println(adjMatrix.toString());
     }
 }

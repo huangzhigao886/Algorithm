@@ -1,19 +1,20 @@
-package com.algorithm.graphtheory;
+package com.algorithm.graphtheory.adj;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Scanner;
-import java.util.TreeSet;
 
 /**
- * 邻接表用treeSet存储性能更优
+ * 邻接表,每个顶点后面都跟着链表
+ * 0:1,2
+ * 1:2,3
+ * 3:1
  *
  * @Author: huangzhigao
- * @Date: 2020/4/9 23:14
+ * @Date: 2020/4/9 22:50
  */
-public class AdjTreeSet {
+public class AdjList {
 
     /**
      * 顶点
@@ -28,9 +29,9 @@ public class AdjTreeSet {
     /**
      * 链表
      */
-    private TreeSet<Integer>[] adj;
+    private LinkedList<Integer>[] adj;
 
-    public AdjTreeSet(String fileName) {
+    public AdjList(String fileName) {
         File file = new File(fileName);
         try {
             Scanner scanner = new Scanner(file);
@@ -40,10 +41,10 @@ public class AdjTreeSet {
                 //顶点数量不能为负数
                 throw new IllegalArgumentException("V must be non-negative");
             }
-            adj = new TreeSet[V];
+            adj = new LinkedList[V];
             for (int i = 0; i < V; i++) {
                 //初始化每个链表
-                adj[i] = new TreeSet<Integer>();
+                adj[i] = new LinkedList<Integer>();
             }
             //第二个元素为边数
             E = scanner.nextInt();
@@ -94,9 +95,9 @@ public class AdjTreeSet {
      * @param v
      * @return
      */
-    public Iterator<Integer> adj(int v) {
+    public LinkedList<Integer> adj(int v) {
         validateVertex(v);
-        return adj[v].iterator();
+        return adj[v];
     }
 
     /**
@@ -105,8 +106,7 @@ public class AdjTreeSet {
      * @return
      */
     public int getDegree(int v) {
-        validateVertex(v);
-        return adj[v].size();
+        return adj(v).size();
     }
 
     @Override
@@ -125,7 +125,7 @@ public class AdjTreeSet {
 
 
     public static void main(String[] args) {
-        AdjTreeSet adjMatrix = new AdjTreeSet("g.txt");
+        AdjList adjMatrix = new AdjList("g.txt");
         System.out.println(adjMatrix.toString());
     }
 }
