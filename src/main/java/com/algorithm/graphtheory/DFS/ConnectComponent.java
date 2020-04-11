@@ -1,4 +1,4 @@
-package com.algorithm.graphtheory;
+package com.algorithm.graphtheory.DFS;
 
 import com.algorithm.graphtheory.adj.Graph;
 import lombok.Data;
@@ -58,11 +58,39 @@ public class ConnectComponent {
         }
     }
 
+    /**
+     * 判断两个顶点是否联通
+     *
+     * @param v
+     * @param w
+     * @return
+     */
+    public boolean isConnected(int v, int w) {
+        return visited[v] == visited[w];
+    }
+
+    /**
+     * 获取每个联通分量所对应的节点
+     *
+     * @return
+     */
+    public List<Integer>[] getComponents() {
+        List<Integer>[] res = new ArrayList[count];
+        for (int i = 0; i < count; i++) {
+            res[i] = new ArrayList<Integer>();
+        }
+        //将visitId相同的节点归为一组
+        for (int i = 0; i < graph.getV(); i++) {
+            res[visited[i]].add(i);
+        }
+        return res;
+    }
+
     public static void main(String[] args) {
         Graph graph = new Graph("dfs.txt");
         ConnectComponent graphDfs = new ConnectComponent(graph);
         int[] visited = graphDfs.getVisited();
-        for(int i = 0;i<visited.length;i++){
+        for (int i = 0; i < visited.length; i++) {
             System.out.println(visited[i]);
         }
     }

@@ -1,22 +1,18 @@
 package com.algorithm.graphtheory.adj;
 
-import lombok.Data;
-
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Scanner;
 import java.util.TreeSet;
 
 /**
- * 目前仅适用于无向无权循环图
+ * 有向与无向的邻接表
  *
  * @Author: huangzhigao
- * @Date: 2020/4/11 14:12
+ * @Date: 2020/4/11 17:15
  */
-@Data
 public class Graph {
+
     /**
      * 顶点
      */
@@ -32,7 +28,10 @@ public class Graph {
      */
     private TreeSet<Integer>[] adj;
 
-    public Graph(String fileName) {
+    private boolean directed;
+
+    public Graph(String fileName, boolean directed) {
+        this.directed = directed;
         File file = new File(fileName);
         try {
             Scanner scanner = new Scanner(file);
@@ -69,11 +68,18 @@ public class Graph {
                 }
                 //因为是无向图，因此既有a->b 也有b->a
                 adj[a].add(b);
-                adj[b].add(a);
+                if (!directed) {
+                    //如果无向图需要加上
+                    adj[b].add(a);
+                }
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    public Graph(String fileName) {
+        this(fileName, false);
     }
 
     private void validateVertex(int v) {
@@ -91,7 +97,7 @@ public class Graph {
     }
 
     /**
-     * 返回与V相邻的顶点
+     * 返回与v指向的顶点
      *
      * @param v
      * @return
@@ -106,11 +112,16 @@ public class Graph {
      *
      * @return
      */
-    public int getDegree(int v) {
-        validateVertex(v);
-        return adj[v].size();
+//    public int getDegree(int v) {
+//        validateVertex(v);
+//        return adj[v].size();
+//    }
+    public void removeEdge(int v, int w) {
+        adj[v].remove(w);
+        if (!directed) {
+            adj[w].remove(v);
+        }
     }
-
 
     @Override
     public String toString() {
