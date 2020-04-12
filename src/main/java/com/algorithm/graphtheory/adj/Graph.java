@@ -33,6 +33,17 @@ public class Graph {
 
     private boolean directed;
 
+    /**
+     * 入读
+     */
+    private int[] inDegree;
+
+    /**
+     * 出度
+     */
+    private int[] outDegree;
+
+
     public Graph(String fileName, boolean directed) {
         this.directed = directed;
         File file = new File(fileName);
@@ -45,9 +56,13 @@ public class Graph {
                 throw new IllegalArgumentException("V must be non-negative");
             }
             adj = new TreeSet[V];
+            inDegree = new int[V];
+            outDegree = new int[V];
             for (int i = 0; i < V; i++) {
                 //初始化每个链表
                 adj[i] = new TreeSet<Integer>();
+                inDegree[i] = 0;
+                outDegree[i] = 0;
             }
             //第二个元素为边数
             E = scanner.nextInt();
@@ -71,6 +86,10 @@ public class Graph {
                 }
                 //因为是无向图，因此既有a->b 也有b->a
                 adj[a].add(b);
+                if (directed) {
+                    outDegree[a]++;
+                    inDegree[b]++;
+                }
                 if (!directed) {
                     //如果无向图需要加上
                     adj[b].add(a);
@@ -115,14 +134,20 @@ public class Graph {
      *
      * @return
      */
-//    public int getDegree(int v) {
-//        validateVertex(v);
-//        return adj[v].size();
-//    }
+    public int getDegree(int v) {
+        validateVertex(v);
+        return adj[v].size();
+    }
+
+
     public void removeEdge(int v, int w) {
         adj[v].remove(w);
         if (!directed) {
             adj[w].remove(v);
+        } else {
+            E--;
+            outDegree[v]--;
+            inDegree[w]--;
         }
     }
 
@@ -137,6 +162,14 @@ public class Graph {
             }
             sb.append('\n');
         }
+
         return sb.toString();
+    }
+
+
+    public static void main(String[] args) {
+        Graph graph = new Graph("ug.txt", true);
+        TreeSet<Integer> adj = graph.adj(2);
+        System.out.println(graph);
     }
 }
