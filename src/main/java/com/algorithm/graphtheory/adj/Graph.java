@@ -119,7 +119,7 @@ public class Graph {
     }
 
     /**
-     * 返回与v指向的顶点
+     * 返回v指向的顶点
      *
      * @param v
      * @return
@@ -139,6 +139,15 @@ public class Graph {
         return adj[v].size();
     }
 
+    /**
+     * 返回入读
+     *
+     * @param v
+     * @return
+     */
+    public int getInDegree(int v) {
+        return inDegree[v];
+    }
 
     public void removeEdge(int v, int w) {
         adj[v].remove(w);
